@@ -55,6 +55,11 @@ if ! PGPASSWORD="$PG_PASS" psql -U "$PG_USER" -h localhost -p "$PG_PORT" -d post
 fi
 echo "    PostgreSQL ativo na porta $PG_PORT"
 
+# ── Instala tzdata no container (resolve Brazil/East do cliente JDBC) ─────────
+docker exec "$CONTAINER" bash -c \
+  "apt-get update -qq && apt-get install -y -qq tzdata" &>/dev/null \
+  && echo "    tzdata instalado ✓"
+
 # ── Cria bancos e tabelas ────────────────────────────────────────────────────
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
