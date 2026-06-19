@@ -41,6 +41,16 @@ if ! PGPASSWORD="$PG_PASS" psql -U "$PG_USER" -h localhost -p "$PG_PORT" -d post
 fi
 echo "    PostgreSQL ativo na porta $PG_PORT"
 
+# ── Corrige timezone (Brazil/East não é reconhecido pelo pg:16) ──────────────
+CURRENT_TZ=$(PGPASSWORD="$PG_PASS" psql -U "$PG_USER" -h localhost -p "$PG_PORT" -d postgres -tAc "SHOW timezone;" 2>/dev/null)
+if [ "$CURRENT_TZ" != "America/Sao_Paulo" ]; then
+  echo "    Corrigindo timezone: $CURRENT_TZ → America/Sao_Paulo"
+  PGPASSWORD="$PG_PASS" psql -U "$PG_USER" -h localhost -p "$PG_PORT" -d postgres \
+    -c "ALTER SYSTEM SET timezone = 'America/Sao_Paulo';" &>/dev/null
+  docker restart "$CONTAINER" &>/dev/null
+  sleep 3
+fi
+
 # ── Cria bancos e tabelas ────────────────────────────────────────────────────
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
