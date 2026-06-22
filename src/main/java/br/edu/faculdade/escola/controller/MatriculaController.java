@@ -4,15 +4,13 @@ import br.edu.faculdade.escola.model.Matricula;
 import br.edu.faculdade.escola.service.MatriculaService;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 public class MatriculaController {
     private final MatriculaService service = new MatriculaService();
 
     public Matricula matricular(int idAluno, int idCurso, BigDecimal valor) {
-        Matricula m = new Matricula(idAluno, idCurso, LocalDate.now(), valor);
-        Matricula salva = service.matricular(m);
+        Matricula salva = service.matricular(idAluno, idCurso, valor);
         System.out.println("[Matrícula realizada] " + salva);
         return salva;
     }

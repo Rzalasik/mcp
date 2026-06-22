@@ -5,16 +5,16 @@ import java.time.LocalDate;
 
 public class Matricula {
     private int id;
-    private int idAluno;
-    private int idCurso;
+    private Aluno aluno;
+    private Curso curso;
     private LocalDate dataMatricula;
     private BigDecimal valor;
 
     public Matricula() {}
 
-    public Matricula(int idAluno, int idCurso, LocalDate dataMatricula, BigDecimal valor) {
-        this.idAluno = idAluno;
-        this.idCurso = idCurso;
+    public Matricula(Aluno aluno, Curso curso, LocalDate dataMatricula, BigDecimal valor) {
+        this.aluno = aluno;
+        this.curso = curso;
         this.dataMatricula = dataMatricula;
         this.valor = valor;
     }
@@ -22,11 +22,11 @@ public class Matricula {
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getIdAluno() { return idAluno; }
-    public void setIdAluno(int idAluno) { this.idAluno = idAluno; }
+    public Aluno getAluno() { return aluno; }
+    public void setAluno(Aluno aluno) { this.aluno = aluno; }
 
-    public int getIdCurso() { return idCurso; }
-    public void setIdCurso(int idCurso) { this.idCurso = idCurso; }
+    public Curso getCurso() { return curso; }
+    public void setCurso(Curso curso) { this.curso = curso; }
 
     public LocalDate getDataMatricula() { return dataMatricula; }
     public void setDataMatricula(LocalDate dataMatricula) { this.dataMatricula = dataMatricula; }
@@ -36,6 +36,9 @@ public class Matricula {
 
     @Override
     public String toString() {
-        return "Matricula{id=" + id + ", idAluno=" + idAluno + ", idCurso=" + idCurso + ", data=" + dataMatricula + ", valor=" + valor + "}";
+        return "Matricula{id=" + id
+                + ", aluno=" + (aluno != null ? aluno.getNome() : "null")
+                + ", curso=" + (curso != null ? curso.getNome() : "null")
+                + ", data=" + dataMatricula + ", valor=" + valor + "}";
     }
 }

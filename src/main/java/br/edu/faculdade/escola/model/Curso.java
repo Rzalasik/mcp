@@ -36,6 +36,8 @@ public class Curso {
     public int getVagasDisponiveis() { return vagasDisponiveis; }
     public void setVagasDisponiveis(int vagasDisponiveis) { this.vagasDisponiveis = vagasDisponiveis; }
 
+    public boolean temVagasDisponiveis() { return vagasDisponiveis > 0; }
+
     @Override
     public String toString() {
         return "Curso{id=" + id + ", nome='" + nome + "', cargaHoraria=" + cargaHoraria + "h, vagasDisponiveis=" + vagasDisponiveis + "/" + vagasTotais + "}";

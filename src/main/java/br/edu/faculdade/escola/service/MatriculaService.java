@@ -1,5 +1,6 @@
 package br.edu.faculdade.escola.service;
 
+import br.edu.faculdade.escola.model.Aluno;
 import br.edu.faculdade.escola.model.Curso;
 import br.edu.faculdade.escola.model.Matricula;
 import br.edu.faculdade.escola.repository.AlunoRepository;
@@ -7,6 +8,7 @@ import br.edu.faculdade.escola.repository.CursoRepository;
 import br.edu.faculdade.escola.repository.MatriculaRepository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class MatriculaService {
@@ -14,30 +16,26 @@ public class MatriculaService {
     private final AlunoRepository alunoRepository = new AlunoRepository();
     private final CursoRepository cursoRepository = new CursoRepository();
 
-    public Matricula matricular(Matricula matricula) {
-        alunoRepository.buscarPorId(matricula.getIdAluno())
+    public Matricula matricular(int idAluno, int idCurso, BigDecimal valor) {
+        Aluno aluno = alunoRepository.buscarPorId(idAluno)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Aluno de id " + matricula.getIdAluno() + " não está cadastrado."));
+                        "Aluno de id " + idAluno + " não está cadastrado."));
 
-        Curso curso = cursoRepository.buscarPorId(matricula.getIdCurso())
+        Curso curso = cursoRepository.buscarPorId(idCurso)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Curso de id " + matricula.getIdCurso() + " não está cadastrado."));
+                        "Curso de id " + idCurso + " não está cadastrado."));
 
-        if (curso.getVagasDisponiveis() <= 0)
+        if (!curso.temVagasDisponiveis())
             throw new IllegalArgumentException("Curso '" + curso.getNome() + "' não possui vagas disponíveis.");
 
-        if (repository.existeMatricula(matricula.getIdAluno(), matricula.getIdCurso()))
+        if (repository.existeMatricula(idAluno, idCurso))
             throw new IllegalArgumentException("Aluno já está matriculado neste curso.");
 
-        if (matricula.getValor() == null || matricula.getValor().compareTo(BigDecimal.ZERO) < 0)
+        if (valor == null || valor.compareTo(BigDecimal.ZERO) < 0)
             throw new IllegalArgumentException("O valor da matrícula não pode ser negativo.");
 
-        Matricula salva = repository.salvar(matricula);
-
-        curso.setVagasDisponiveis(curso.getVagasDisponiveis() - 1);
-        cursoRepository.atualizar(curso);
-
-        return salva;
+        Matricula matricula = new Matricula(aluno, curso, LocalDate.now(), valor);
+        return repository.registrarComTransacao(matricula);
     }
 
     public Matricula buscarPorId(int id) {
