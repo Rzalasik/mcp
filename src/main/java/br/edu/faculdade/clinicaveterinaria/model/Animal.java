@@ -5,15 +5,15 @@ public class Animal {
     private String nome;
     private String especie;
     private String raca;
-    private int idTutor;
+    private Tutor tutor;
 
     public Animal() {}
 
-    public Animal(String nome, String especie, String raca, int idTutor) {
+    public Animal(String nome, String especie, String raca, Tutor tutor) {
         this.nome = nome;
         this.especie = especie;
         this.raca = raca;
-        this.idTutor = idTutor;
+        this.tutor = tutor;
     }
 
     public int getId() { return id; }
@@ -28,11 +28,12 @@ public class Animal {
     public String getRaca() { return raca; }
     public void setRaca(String raca) { this.raca = raca; }
 
-    public int getIdTutor() { return idTutor; }
-    public void setIdTutor(int idTutor) { this.idTutor = idTutor; }
+    public Tutor getTutor() { return tutor; }
+    public void setTutor(Tutor tutor) { this.tutor = tutor; }
 
     @Override
     public String toString() {
-        return "Animal{id=" + id + ", nome='" + nome + "', especie='" + especie + "', raca='" + raca + "', idTutor=" + idTutor + "}";
+        return "Animal{id=" + id + ", nome='" + nome + "', especie='" + especie
+                + "', raca='" + raca + "', tutor=" + (tutor != null ? tutor.getNome() : "null") + "}";
     }
 }

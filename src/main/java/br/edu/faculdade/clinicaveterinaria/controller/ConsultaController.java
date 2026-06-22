@@ -11,8 +11,7 @@ public class ConsultaController {
     private final ConsultaService service = new ConsultaService();
 
     public Consulta registrar(int idAnimal, LocalDate data, String motivo, BigDecimal valor) {
-        Consulta consulta = new Consulta(idAnimal, data, motivo, valor);
-        Consulta salva = service.registrar(consulta);
+        Consulta salva = service.registrar(idAnimal, data, motivo, valor);
         System.out.println("[Consulta registrada] " + salva);
         return salva;
     }

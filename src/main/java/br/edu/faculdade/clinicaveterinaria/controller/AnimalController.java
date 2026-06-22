@@ -9,8 +9,7 @@ public class AnimalController {
     private final AnimalService service = new AnimalService();
 
     public Animal cadastrar(String nome, String especie, String raca, int idTutor) {
-        Animal animal = new Animal(nome, especie, raca, idTutor);
-        Animal salvo = service.cadastrar(animal);
+        Animal salvo = service.cadastrar(nome, especie, raca, idTutor);
         System.out.println("[Animal cadastrado] " + salvo);
         return salvo;
     }

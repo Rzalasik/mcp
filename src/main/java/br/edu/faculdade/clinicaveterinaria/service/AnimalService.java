@@ -1,6 +1,7 @@
 package br.edu.faculdade.clinicaveterinaria.service;
 
 import br.edu.faculdade.clinicaveterinaria.model.Animal;
+import br.edu.faculdade.clinicaveterinaria.model.Tutor;
 import br.edu.faculdade.clinicaveterinaria.repository.AnimalRepository;
 import br.edu.faculdade.clinicaveterinaria.repository.TutorRepository;
 
@@ -10,12 +11,12 @@ public class AnimalService {
     private final AnimalRepository repository = new AnimalRepository();
     private final TutorRepository tutorRepository = new TutorRepository();
 
-    public Animal cadastrar(Animal animal) {
-        tutorRepository.buscarPorId(animal.getIdTutor())
-                .orElseThrow(() -> new IllegalArgumentException("Tutor não encontrado com id " + animal.getIdTutor()));
-        if (animal.getNome() == null || animal.getNome().isBlank())
+    public Animal cadastrar(String nome, String especie, String raca, int idTutor) {
+        Tutor tutor = tutorRepository.buscarPorId(idTutor)
+                .orElseThrow(() -> new IllegalArgumentException("Tutor não encontrado com id " + idTutor));
+        if (nome == null || nome.isBlank())
             throw new IllegalArgumentException("Nome do animal é obrigatório.");
-        return repository.salvar(animal);
+        return repository.salvar(new Animal(nome, especie, raca, tutor));
     }
 
     public Animal buscarPorId(int id) {

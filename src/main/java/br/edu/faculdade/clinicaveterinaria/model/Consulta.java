@@ -5,25 +5,29 @@ import java.time.LocalDate;
 
 public class Consulta {
     private int id;
-    private int idAnimal;
+    private Animal animal;
     private LocalDate data;
     private String motivo;
     private BigDecimal valor;
 
     public Consulta() {}
 
-    public Consulta(int idAnimal, LocalDate data, String motivo, BigDecimal valor) {
-        this.idAnimal = idAnimal;
+    public Consulta(Animal animal, LocalDate data, String motivo, BigDecimal valor) {
+        this.animal = animal;
         this.data = data;
         this.motivo = motivo;
         this.valor = valor;
     }
 
+    public boolean isValorValido() {
+        return valor != null && valor.compareTo(BigDecimal.ZERO) >= 0;
+    }
+
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
 
-    public int getIdAnimal() { return idAnimal; }
-    public void setIdAnimal(int idAnimal) { this.idAnimal = idAnimal; }
+    public Animal getAnimal() { return animal; }
+    public void setAnimal(Animal animal) { this.animal = animal; }
 
     public LocalDate getData() { return data; }
     public void setData(LocalDate data) { this.data = data; }
@@ -36,6 +40,8 @@ public class Consulta {
 
     @Override
     public String toString() {
-        return "Consulta{id=" + id + ", idAnimal=" + idAnimal + ", data=" + data + ", motivo='" + motivo + "', valor=" + valor + "}";
+        return "Consulta{id=" + id
+                + ", animal=" + (animal != null ? animal.getNome() : "null")
+                + ", data=" + data + ", motivo='" + motivo + "', valor=" + valor + "}";
     }
 }

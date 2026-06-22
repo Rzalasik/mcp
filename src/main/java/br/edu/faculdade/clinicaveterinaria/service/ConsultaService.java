@@ -1,23 +1,26 @@
 package br.edu.faculdade.clinicaveterinaria.service;
 
+import br.edu.faculdade.clinicaveterinaria.model.Animal;
 import br.edu.faculdade.clinicaveterinaria.model.Consulta;
 import br.edu.faculdade.clinicaveterinaria.repository.AnimalRepository;
 import br.edu.faculdade.clinicaveterinaria.repository.ConsultaRepository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class ConsultaService {
     private final ConsultaRepository repository = new ConsultaRepository();
     private final AnimalRepository animalRepository = new AnimalRepository();
 
-    public Consulta registrar(Consulta consulta) {
-        animalRepository.buscarPorId(consulta.getIdAnimal())
+    public Consulta registrar(int idAnimal, LocalDate data, String motivo, BigDecimal valor) {
+        Animal animal = animalRepository.buscarPorId(idAnimal)
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "Não é possível registrar consulta: animal de id " + consulta.getIdAnimal() + " não está cadastrado."));
-        if (consulta.getValor() == null || consulta.getValor().compareTo(BigDecimal.ZERO) < 0)
+                        "Não é possível registrar consulta: animal de id " + idAnimal + " não está cadastrado."));
+        Consulta consulta = new Consulta(animal, data, motivo, valor);
+        if (!consulta.isValorValido())
             throw new IllegalArgumentException("O valor da consulta não pode ser negativo.");
-        if (consulta.getData() == null)
+        if (data == null)
             throw new IllegalArgumentException("A data da consulta é obrigatória.");
         return repository.salvar(consulta);
     }

@@ -1,6 +1,7 @@
 package br.edu.faculdade.clinicaveterinaria.repository;
 
 import br.edu.faculdade.clinicaveterinaria.model.Animal;
+import br.edu.faculdade.clinicaveterinaria.model.Tutor;
 import br.edu.faculdade.clinicaveterinaria.util.Conexao;
 
 import java.sql.*;
@@ -17,7 +18,7 @@ public class AnimalRepository {
             stmt.setString(1, animal.getNome());
             stmt.setString(2, animal.getEspecie());
             stmt.setString(3, animal.getRaca());
-            stmt.setInt(4, animal.getIdTutor());
+            stmt.setInt(4, animal.getTutor().getId());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) animal.setId(rs.getInt("id"));
         } catch (SQLException e) {
@@ -27,7 +28,13 @@ public class AnimalRepository {
     }
 
     public Optional<Animal> buscarPorId(int id) {
-        String sql = "SELECT * FROM animal WHERE id = ?";
+        String sql = """
+                SELECT a.id, a.nome, a.especie, a.raca,
+                       t.id AS tutor_id, t.nome AS tutor_nome, t.endereco, t.telefone
+                FROM animal a
+                JOIN tutor t ON t.id = a.id_tutor
+                WHERE a.id = ?
+                """;
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -40,7 +47,13 @@ public class AnimalRepository {
     }
 
     public List<Animal> listarTodos() {
-        String sql = "SELECT * FROM animal";
+        String sql = """
+                SELECT a.id, a.nome, a.especie, a.raca,
+                       t.id AS tutor_id, t.nome AS tutor_nome, t.endereco, t.telefone
+                FROM animal a
+                JOIN tutor t ON t.id = a.id_tutor
+                ORDER BY a.nome
+                """;
         List<Animal> lista = new ArrayList<>();
         try (Connection conn = Conexao.obterConexao();
              Statement stmt = conn.createStatement();
@@ -53,7 +66,13 @@ public class AnimalRepository {
     }
 
     public List<Animal> listarPorTutor(int idTutor) {
-        String sql = "SELECT * FROM animal WHERE id_tutor = ?";
+        String sql = """
+                SELECT a.id, a.nome, a.especie, a.raca,
+                       t.id AS tutor_id, t.nome AS tutor_nome, t.endereco, t.telefone
+                FROM animal a
+                JOIN tutor t ON t.id = a.id_tutor
+                WHERE a.id_tutor = ?
+                """;
         List<Animal> lista = new ArrayList<>();
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -73,7 +92,7 @@ public class AnimalRepository {
             stmt.setString(1, animal.getNome());
             stmt.setString(2, animal.getEspecie());
             stmt.setString(3, animal.getRaca());
-            stmt.setInt(4, animal.getIdTutor());
+            stmt.setInt(4, animal.getTutor().getId());
             stmt.setInt(5, animal.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -93,12 +112,18 @@ public class AnimalRepository {
     }
 
     private Animal mapear(ResultSet rs) throws SQLException {
+        Tutor tutor = new Tutor();
+        tutor.setId(rs.getInt("tutor_id"));
+        tutor.setNome(rs.getString("tutor_nome"));
+        tutor.setEndereco(rs.getString("endereco"));
+        tutor.setTelefone(rs.getString("telefone"));
+
         Animal a = new Animal();
         a.setId(rs.getInt("id"));
         a.setNome(rs.getString("nome"));
         a.setEspecie(rs.getString("especie"));
         a.setRaca(rs.getString("raca"));
-        a.setIdTutor(rs.getInt("id_tutor"));
+        a.setTutor(tutor);
         return a;
     }
 }

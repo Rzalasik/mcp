@@ -1,6 +1,8 @@
 package br.edu.faculdade.clinicaveterinaria.repository;
 
+import br.edu.faculdade.clinicaveterinaria.model.Animal;
 import br.edu.faculdade.clinicaveterinaria.model.Consulta;
+import br.edu.faculdade.clinicaveterinaria.model.Tutor;
 import br.edu.faculdade.clinicaveterinaria.util.Conexao;
 
 import java.sql.*;
@@ -14,7 +16,7 @@ public class ConsultaRepository {
         String sql = "INSERT INTO consulta (id_animal, data, motivo, valor) VALUES (?, ?, ?, ?) RETURNING id";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, consulta.getIdAnimal());
+            stmt.setInt(1, consulta.getAnimal().getId());
             stmt.setDate(2, Date.valueOf(consulta.getData()));
             stmt.setString(3, consulta.getMotivo());
             stmt.setBigDecimal(4, consulta.getValor());
@@ -27,7 +29,15 @@ public class ConsultaRepository {
     }
 
     public Optional<Consulta> buscarPorId(int id) {
-        String sql = "SELECT * FROM consulta WHERE id = ?";
+        String sql = """
+                SELECT c.id, c.data, c.motivo, c.valor,
+                       a.id AS animal_id, a.nome AS animal_nome, a.especie, a.raca,
+                       t.id AS tutor_id, t.nome AS tutor_nome, t.endereco, t.telefone
+                FROM consulta c
+                JOIN animal a ON a.id = c.id_animal
+                JOIN tutor  t ON t.id = a.id_tutor
+                WHERE c.id = ?
+                """;
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -40,7 +50,15 @@ public class ConsultaRepository {
     }
 
     public List<Consulta> listarTodos() {
-        String sql = "SELECT * FROM consulta";
+        String sql = """
+                SELECT c.id, c.data, c.motivo, c.valor,
+                       a.id AS animal_id, a.nome AS animal_nome, a.especie, a.raca,
+                       t.id AS tutor_id, t.nome AS tutor_nome, t.endereco, t.telefone
+                FROM consulta c
+                JOIN animal a ON a.id = c.id_animal
+                JOIN tutor  t ON t.id = a.id_tutor
+                ORDER BY c.data DESC
+                """;
         List<Consulta> lista = new ArrayList<>();
         try (Connection conn = Conexao.obterConexao();
              Statement stmt = conn.createStatement();
@@ -53,7 +71,16 @@ public class ConsultaRepository {
     }
 
     public List<Consulta> listarPorAnimal(int idAnimal) {
-        String sql = "SELECT * FROM consulta WHERE id_animal = ?";
+        String sql = """
+                SELECT c.id, c.data, c.motivo, c.valor,
+                       a.id AS animal_id, a.nome AS animal_nome, a.especie, a.raca,
+                       t.id AS tutor_id, t.nome AS tutor_nome, t.endereco, t.telefone
+                FROM consulta c
+                JOIN animal a ON a.id = c.id_animal
+                JOIN tutor  t ON t.id = a.id_tutor
+                WHERE c.id_animal = ?
+                ORDER BY c.data DESC
+                """;
         List<Consulta> lista = new ArrayList<>();
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -70,7 +97,7 @@ public class ConsultaRepository {
         String sql = "UPDATE consulta SET id_animal = ?, data = ?, motivo = ?, valor = ? WHERE id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, consulta.getIdAnimal());
+            stmt.setInt(1, consulta.getAnimal().getId());
             stmt.setDate(2, Date.valueOf(consulta.getData()));
             stmt.setString(3, consulta.getMotivo());
             stmt.setBigDecimal(4, consulta.getValor());
@@ -93,9 +120,22 @@ public class ConsultaRepository {
     }
 
     private Consulta mapear(ResultSet rs) throws SQLException {
+        Tutor tutor = new Tutor();
+        tutor.setId(rs.getInt("tutor_id"));
+        tutor.setNome(rs.getString("tutor_nome"));
+        tutor.setEndereco(rs.getString("endereco"));
+        tutor.setTelefone(rs.getString("telefone"));
+
+        Animal animal = new Animal();
+        animal.setId(rs.getInt("animal_id"));
+        animal.setNome(rs.getString("animal_nome"));
+        animal.setEspecie(rs.getString("especie"));
+        animal.setRaca(rs.getString("raca"));
+        animal.setTutor(tutor);
+
         Consulta c = new Consulta();
         c.setId(rs.getInt("id"));
-        c.setIdAnimal(rs.getInt("id_animal"));
+        c.setAnimal(animal);
         c.setData(rs.getDate("data").toLocalDate());
         c.setMotivo(rs.getString("motivo"));
         c.setValor(rs.getBigDecimal("valor"));
