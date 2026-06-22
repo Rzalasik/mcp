@@ -5,15 +5,15 @@ public class Veiculo {
     private String placa;
     private String modelo;
     private int ano;
-    private int idCliente;
+    private Cliente cliente;
 
     public Veiculo() {}
 
-    public Veiculo(String placa, String modelo, int ano, int idCliente) {
+    public Veiculo(String placa, String modelo, int ano, Cliente cliente) {
         this.placa = placa;
         this.modelo = modelo;
         this.ano = ano;
-        this.idCliente = idCliente;
+        this.cliente = cliente;
     }
 
     public int getId() { return id; }
@@ -28,11 +28,12 @@ public class Veiculo {
     public int getAno() { return ano; }
     public void setAno(int ano) { this.ano = ano; }
 
-    public int getIdCliente() { return idCliente; }
-    public void setIdCliente(int idCliente) { this.idCliente = idCliente; }
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
 
     @Override
     public String toString() {
-        return "Veiculo{id=" + id + ", placa='" + placa + "', modelo='" + modelo + "', ano=" + ano + ", idCliente=" + idCliente + "}";
+        return "Veiculo{id=" + id + ", placa='" + placa + "', modelo='" + modelo
+                + "', ano=" + ano + ", cliente=" + (cliente != null ? cliente.getNome() : "null") + "}";
     }
 }

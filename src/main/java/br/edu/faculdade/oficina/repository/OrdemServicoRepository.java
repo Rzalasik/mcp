@@ -1,6 +1,8 @@
 package br.edu.faculdade.oficina.repository;
 
+import br.edu.faculdade.oficina.model.Cliente;
 import br.edu.faculdade.oficina.model.OrdemServico;
+import br.edu.faculdade.oficina.model.Veiculo;
 import br.edu.faculdade.oficina.util.Conexao;
 
 import java.sql.*;
@@ -14,7 +16,7 @@ public class OrdemServicoRepository {
         String sql = "INSERT INTO ordem_servico (id_veiculo, descricao, valor, status) VALUES (?, ?, ?, ?) RETURNING id";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, os.getIdVeiculo());
+            stmt.setInt(1, os.getVeiculo().getId());
             stmt.setString(2, os.getDescricao());
             stmt.setBigDecimal(3, os.getValor());
             stmt.setString(4, os.getStatus());
@@ -27,7 +29,15 @@ public class OrdemServicoRepository {
     }
 
     public Optional<OrdemServico> buscarPorId(int id) {
-        String sql = "SELECT * FROM ordem_servico WHERE id = ?";
+        String sql = """
+                SELECT o.id, o.descricao, o.valor, o.status,
+                       v.id AS veiculo_id, v.placa, v.modelo, v.ano,
+                       c.id AS cliente_id, c.nome AS cliente_nome, c.telefone
+                FROM ordem_servico o
+                JOIN veiculo v ON v.id = o.id_veiculo
+                JOIN cliente c ON c.id = v.id_cliente
+                WHERE o.id = ?
+                """;
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -40,7 +50,15 @@ public class OrdemServicoRepository {
     }
 
     public List<OrdemServico> listarTodos() {
-        String sql = "SELECT * FROM ordem_servico";
+        String sql = """
+                SELECT o.id, o.descricao, o.valor, o.status,
+                       v.id AS veiculo_id, v.placa, v.modelo, v.ano,
+                       c.id AS cliente_id, c.nome AS cliente_nome, c.telefone
+                FROM ordem_servico o
+                JOIN veiculo v ON v.id = o.id_veiculo
+                JOIN cliente c ON c.id = v.id_cliente
+                ORDER BY o.id
+                """;
         List<OrdemServico> lista = new ArrayList<>();
         try (Connection conn = Conexao.obterConexao();
              Statement stmt = conn.createStatement();
@@ -53,7 +71,16 @@ public class OrdemServicoRepository {
     }
 
     public List<OrdemServico> listarPorVeiculo(int idVeiculo) {
-        String sql = "SELECT * FROM ordem_servico WHERE id_veiculo = ?";
+        String sql = """
+                SELECT o.id, o.descricao, o.valor, o.status,
+                       v.id AS veiculo_id, v.placa, v.modelo, v.ano,
+                       c.id AS cliente_id, c.nome AS cliente_nome, c.telefone
+                FROM ordem_servico o
+                JOIN veiculo v ON v.id = o.id_veiculo
+                JOIN cliente c ON c.id = v.id_cliente
+                WHERE o.id_veiculo = ?
+                ORDER BY o.id
+                """;
         List<OrdemServico> lista = new ArrayList<>();
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -70,7 +97,7 @@ public class OrdemServicoRepository {
         String sql = "UPDATE ordem_servico SET id_veiculo = ?, descricao = ?, valor = ?, status = ? WHERE id = ?";
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, os.getIdVeiculo());
+            stmt.setInt(1, os.getVeiculo().getId());
             stmt.setString(2, os.getDescricao());
             stmt.setBigDecimal(3, os.getValor());
             stmt.setString(4, os.getStatus());
@@ -93,9 +120,21 @@ public class OrdemServicoRepository {
     }
 
     private OrdemServico mapear(ResultSet rs) throws SQLException {
+        Cliente cliente = new Cliente();
+        cliente.setId(rs.getInt("cliente_id"));
+        cliente.setNome(rs.getString("cliente_nome"));
+        cliente.setTelefone(rs.getString("telefone"));
+
+        Veiculo veiculo = new Veiculo();
+        veiculo.setId(rs.getInt("veiculo_id"));
+        veiculo.setPlaca(rs.getString("placa"));
+        veiculo.setModelo(rs.getString("modelo"));
+        veiculo.setAno(rs.getInt("ano"));
+        veiculo.setCliente(cliente);
+
         OrdemServico os = new OrdemServico();
         os.setId(rs.getInt("id"));
-        os.setIdVeiculo(rs.getInt("id_veiculo"));
+        os.setVeiculo(veiculo);
         os.setDescricao(rs.getString("descricao"));
         os.setValor(rs.getBigDecimal("valor"));
         os.setStatus(rs.getString("status"));

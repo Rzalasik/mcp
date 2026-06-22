@@ -9,8 +9,7 @@ public class VeiculoController {
     private final VeiculoService service = new VeiculoService();
 
     public Veiculo cadastrar(String placa, String modelo, int ano, int idCliente) {
-        Veiculo veiculo = new Veiculo(placa, modelo, ano, idCliente);
-        Veiculo salvo = service.cadastrar(veiculo);
+        Veiculo salvo = service.cadastrar(placa, modelo, ano, idCliente);
         System.out.println("[Veículo cadastrado] " + salvo);
         return salvo;
     }

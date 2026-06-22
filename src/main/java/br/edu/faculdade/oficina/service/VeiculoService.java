@@ -1,5 +1,6 @@
 package br.edu.faculdade.oficina.service;
 
+import br.edu.faculdade.oficina.model.Cliente;
 import br.edu.faculdade.oficina.model.Veiculo;
 import br.edu.faculdade.oficina.repository.ClienteRepository;
 import br.edu.faculdade.oficina.repository.VeiculoRepository;
@@ -10,12 +11,12 @@ public class VeiculoService {
     private final VeiculoRepository repository = new VeiculoRepository();
     private final ClienteRepository clienteRepository = new ClienteRepository();
 
-    public Veiculo cadastrar(Veiculo veiculo) {
-        clienteRepository.buscarPorId(veiculo.getIdCliente())
-                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado com id " + veiculo.getIdCliente()));
-        if (veiculo.getPlaca() == null || veiculo.getPlaca().isBlank())
+    public Veiculo cadastrar(String placa, String modelo, int ano, int idCliente) {
+        Cliente cliente = clienteRepository.buscarPorId(idCliente)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado com id " + idCliente));
+        if (placa == null || placa.isBlank())
             throw new IllegalArgumentException("Placa do veículo é obrigatória.");
-        return repository.salvar(veiculo);
+        return repository.salvar(new Veiculo(placa, modelo, ano, cliente));
     }
 
     public Veiculo buscarPorId(int id) {

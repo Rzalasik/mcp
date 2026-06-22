@@ -10,8 +10,7 @@ public class OrdemServicoController {
     private final OrdemServicoService service = new OrdemServicoService();
 
     public OrdemServico abrir(int idVeiculo, String descricao, BigDecimal valor) {
-        OrdemServico os = new OrdemServico(idVeiculo, descricao, valor, "ABERTA");
-        OrdemServico salva = service.abrir(os);
+        OrdemServico salva = service.abrir(idVeiculo, descricao, valor);
         System.out.println("[Ordem de serviço aberta] " + salva);
         return salva;
     }

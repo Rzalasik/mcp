@@ -1,5 +1,6 @@
 package br.edu.faculdade.oficina.repository;
 
+import br.edu.faculdade.oficina.model.Cliente;
 import br.edu.faculdade.oficina.model.Veiculo;
 import br.edu.faculdade.oficina.util.Conexao;
 
@@ -17,7 +18,7 @@ public class VeiculoRepository {
             stmt.setString(1, veiculo.getPlaca());
             stmt.setString(2, veiculo.getModelo());
             stmt.setInt(3, veiculo.getAno());
-            stmt.setInt(4, veiculo.getIdCliente());
+            stmt.setInt(4, veiculo.getCliente().getId());
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) veiculo.setId(rs.getInt("id"));
         } catch (SQLException e) {
@@ -27,7 +28,13 @@ public class VeiculoRepository {
     }
 
     public Optional<Veiculo> buscarPorId(int id) {
-        String sql = "SELECT * FROM veiculo WHERE id = ?";
+        String sql = """
+                SELECT v.id, v.placa, v.modelo, v.ano,
+                       c.id AS cliente_id, c.nome AS cliente_nome, c.telefone
+                FROM veiculo v
+                JOIN cliente c ON c.id = v.id_cliente
+                WHERE v.id = ?
+                """;
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
@@ -40,7 +47,13 @@ public class VeiculoRepository {
     }
 
     public List<Veiculo> listarTodos() {
-        String sql = "SELECT * FROM veiculo";
+        String sql = """
+                SELECT v.id, v.placa, v.modelo, v.ano,
+                       c.id AS cliente_id, c.nome AS cliente_nome, c.telefone
+                FROM veiculo v
+                JOIN cliente c ON c.id = v.id_cliente
+                ORDER BY v.modelo
+                """;
         List<Veiculo> lista = new ArrayList<>();
         try (Connection conn = Conexao.obterConexao();
              Statement stmt = conn.createStatement();
@@ -53,7 +66,13 @@ public class VeiculoRepository {
     }
 
     public List<Veiculo> listarPorCliente(int idCliente) {
-        String sql = "SELECT * FROM veiculo WHERE id_cliente = ?";
+        String sql = """
+                SELECT v.id, v.placa, v.modelo, v.ano,
+                       c.id AS cliente_id, c.nome AS cliente_nome, c.telefone
+                FROM veiculo v
+                JOIN cliente c ON c.id = v.id_cliente
+                WHERE v.id_cliente = ?
+                """;
         List<Veiculo> lista = new ArrayList<>();
         try (Connection conn = Conexao.obterConexao();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -73,7 +92,7 @@ public class VeiculoRepository {
             stmt.setString(1, veiculo.getPlaca());
             stmt.setString(2, veiculo.getModelo());
             stmt.setInt(3, veiculo.getAno());
-            stmt.setInt(4, veiculo.getIdCliente());
+            stmt.setInt(4, veiculo.getCliente().getId());
             stmt.setInt(5, veiculo.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -93,12 +112,17 @@ public class VeiculoRepository {
     }
 
     private Veiculo mapear(ResultSet rs) throws SQLException {
+        Cliente cliente = new Cliente();
+        cliente.setId(rs.getInt("cliente_id"));
+        cliente.setNome(rs.getString("cliente_nome"));
+        cliente.setTelefone(rs.getString("telefone"));
+
         Veiculo v = new Veiculo();
         v.setId(rs.getInt("id"));
         v.setPlaca(rs.getString("placa"));
         v.setModelo(rs.getString("modelo"));
         v.setAno(rs.getInt("ano"));
-        v.setIdCliente(rs.getInt("id_cliente"));
+        v.setCliente(cliente);
         return v;
     }
 }
