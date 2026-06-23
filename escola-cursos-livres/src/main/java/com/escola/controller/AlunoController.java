@@ -18,7 +18,7 @@ public class AlunoController {
             System.out.println("[Aluno] Cadastrado com sucesso: " + aluno);
             return aluno;
         } catch (IllegalArgumentException | SQLException e) {
-            System.out.println("[Aluno] Erro ao cadastrar: " + e.getMessage());
+            System.out.println("[Aluno] Erro ao Cadastrar: " + e.getMessage());
             return null;
         }
     }
