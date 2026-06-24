@@ -118,6 +118,8 @@ mvn exec:java
 | 2 | Valor da OS não pode ser negativo — lança `IllegalArgumentException` |
 | 3 | É possível consultar o histórico completo de manutenções de um veículo |
 | 4 | O status da OS pode ser alterado de `ABERTA` para `CONCLUIDA` |
+| 5 | Não é permitido concluir uma OS já `CONCLUIDA` — lança `IllegalStateException` |
+| 6 | Nome e telefone do cliente são obrigatórios |
 
 ---
 
@@ -129,4 +131,5 @@ mvn exec:java
 4. Lista o histórico de OSs do veículo
 5. Conclui a OS (status muda de `ABERTA` para `CONCLUIDA`)
 6. Lista o histórico novamente para verificar o status atualizado
-7. Tenta abrir OS com valor negativo — exibe mensagem de erro (regra de negócio)
+7. Tenta concluir OS já concluída — exibe mensagem de erro (regra de negócio)
+8. Tenta abrir OS com valor negativo — exibe mensagem de erro (regra de negócio)
