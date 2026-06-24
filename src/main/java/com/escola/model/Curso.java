@@ -1,4 +1,4 @@
-package br.edu.faculdade.escola.model;
+package com.escola.model;
 
 public class Curso {
     private int id;
@@ -10,12 +10,12 @@ public class Curso {
 
     public Curso() {}
 
-    public Curso(String nome, String descricao, int cargaHoraria, int vagasTotais) {
+    public Curso(String nome, String descricao, int cargaHoraria, int vagasTotais, int vagasDisponiveis) {
         this.nome = nome;
         this.descricao = descricao;
         this.cargaHoraria = cargaHoraria;
         this.vagasTotais = vagasTotais;
-        this.vagasDisponiveis = vagasTotais;
+        this.vagasDisponiveis = vagasDisponiveis;
     }
 
     public int getId() { return id; }
@@ -36,10 +36,8 @@ public class Curso {
     public int getVagasDisponiveis() { return vagasDisponiveis; }
     public void setVagasDisponiveis(int vagasDisponiveis) { this.vagasDisponiveis = vagasDisponiveis; }
 
-    public boolean temVagasDisponiveis() { return vagasDisponiveis > 0; }
-
     @Override
     public String toString() {
-        return "Curso{id=" + id + ", nome='" + nome + "', cargaHoraria=" + cargaHoraria + "h, vagasDisponiveis=" + vagasDisponiveis + "/" + vagasTotais + "}";
+        return "Curso{id=" + id + ", nome='" + nome + "', cargaHoraria=" + cargaHoraria + "h, vagasTotais=" + vagasTotais + ", vagasDisponiveis=" + vagasDisponiveis + "}";
     }
 }

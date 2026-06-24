@@ -1,27 +1,30 @@
 -- Escola de Cursos Livres — Script de criação do banco de dados
--- Banco: escola_cursos
+-- Execute este arquivo no DBeaver conectado ao banco: d_escola_cursos
+-- (crie o banco antes: CREATE DATABASE d_escola_cursos;)
 
 CREATE TABLE IF NOT EXISTS aluno (
     id        SERIAL PRIMARY KEY,
     nome      VARCHAR(100) NOT NULL,
-    email     VARCHAR(150) NOT NULL,
-    telefone  VARCHAR(20)  NOT NULL
+    email     VARCHAR(100) NOT NULL UNIQUE,
+    telefone  VARCHAR(20)
 );
 
 CREATE TABLE IF NOT EXISTS curso (
-    id                SERIAL PRIMARY KEY,
-    nome              VARCHAR(100) NOT NULL,
-    descricao         VARCHAR(300) NOT NULL,
-    carga_horaria     INTEGER      NOT NULL,
-    vagas_totais      INTEGER      NOT NULL,
-    vagas_disponiveis INTEGER      NOT NULL
+    id                 SERIAL PRIMARY KEY,
+    nome               VARCHAR(100) NOT NULL,
+    descricao          TEXT,
+    carga_horaria      INT NOT NULL,
+    vagas_totais       INT NOT NULL,
+    vagas_disponiveis  INT NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS matricula (
-    id              SERIAL PRIMARY KEY,
-    id_aluno        INTEGER        NOT NULL REFERENCES aluno(id),
-    id_curso        INTEGER        NOT NULL REFERENCES curso(id),
-    data_matricula  DATE           NOT NULL,
-    valor           NUMERIC(10, 2) NOT NULL CHECK (valor >= 0),
-    CONSTRAINT uq_aluno_curso UNIQUE (id_aluno, id_curso)
+    id          SERIAL PRIMARY KEY,
+    aluno_id    INT            NOT NULL,
+    curso_id    INT            NOT NULL,
+    data        DATE           NOT NULL,
+    valor_pago  NUMERIC(10, 2) NOT NULL CHECK (valor_pago >= 0),
+    CONSTRAINT fk_matricula_aluno FOREIGN KEY (aluno_id) REFERENCES aluno(id),
+    CONSTRAINT fk_matricula_curso FOREIGN KEY (curso_id) REFERENCES curso(id),
+    CONSTRAINT uq_matricula_aluno_curso UNIQUE (aluno_id, curso_id)
 );

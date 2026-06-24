@@ -1,4 +1,4 @@
-package br.edu.faculdade.escola.model;
+package com.escola.model;
 
 public class Aluno {
     private int id;
