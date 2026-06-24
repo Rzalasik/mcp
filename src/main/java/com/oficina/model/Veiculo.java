@@ -1,19 +1,19 @@
-package br.edu.faculdade.oficina.model;
+package com.oficina.model;
 
 public class Veiculo {
     private int id;
     private String placa;
     private String modelo;
     private int ano;
-    private Cliente cliente;
+    private int clienteId;
 
     public Veiculo() {}
 
-    public Veiculo(String placa, String modelo, int ano, Cliente cliente) {
+    public Veiculo(String placa, String modelo, int ano, int clienteId) {
         this.placa = placa;
         this.modelo = modelo;
         this.ano = ano;
-        this.cliente = cliente;
+        this.clienteId = clienteId;
     }
 
     public int getId() { return id; }
@@ -28,12 +28,11 @@ public class Veiculo {
     public int getAno() { return ano; }
     public void setAno(int ano) { this.ano = ano; }
 
-    public Cliente getCliente() { return cliente; }
-    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+    public int getClienteId() { return clienteId; }
+    public void setClienteId(int clienteId) { this.clienteId = clienteId; }
 
     @Override
     public String toString() {
-        return "Veiculo{id=" + id + ", placa='" + placa + "', modelo='" + modelo
-                + "', ano=" + ano + ", cliente=" + (cliente != null ? cliente.getNome() : "null") + "}";
+        return "Veiculo{id=" + id + ", placa='" + placa + "', modelo='" + modelo + "', ano=" + ano + ", clienteId=" + clienteId + "}";
     }
 }

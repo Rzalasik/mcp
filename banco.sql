@@ -1,24 +1,28 @@
 -- Oficina Mecânica — Script de criação do banco de dados
--- Banco: oficina_mecanica
+-- Execute este arquivo no DBeaver conectado ao banco: d_oficina_mecanica
+-- (crie o banco antes: CREATE DATABASE d_oficina_mecanica;)
 
 CREATE TABLE IF NOT EXISTS cliente (
     id        SERIAL PRIMARY KEY,
     nome      VARCHAR(100) NOT NULL,
-    telefone  VARCHAR(20)  NOT NULL
+    telefone  VARCHAR(20)
 );
 
 CREATE TABLE IF NOT EXISTS veiculo (
-    id         SERIAL PRIMARY KEY,
-    placa      VARCHAR(10)  NOT NULL,
-    modelo     VARCHAR(100) NOT NULL,
-    ano        INTEGER      NOT NULL,
-    id_cliente INTEGER      NOT NULL REFERENCES cliente(id)
+    id          SERIAL PRIMARY KEY,
+    placa       VARCHAR(10)  NOT NULL UNIQUE,
+    modelo      VARCHAR(100) NOT NULL,
+    ano         INT,
+    cliente_id  INT NOT NULL,
+    CONSTRAINT fk_veiculo_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(id)
 );
 
 CREATE TABLE IF NOT EXISTS ordem_servico (
-    id         SERIAL PRIMARY KEY,
-    id_veiculo INTEGER        NOT NULL REFERENCES veiculo(id),
-    descricao  VARCHAR(300)   NOT NULL,
-    valor      NUMERIC(10, 2) NOT NULL CHECK (valor >= 0),
-    status     VARCHAR(20)    NOT NULL CHECK (status IN ('ABERTA', 'CONCLUIDA'))
+    id                  SERIAL PRIMARY KEY,
+    veiculo_id          INT            NOT NULL,
+    descricao_problema  TEXT           NOT NULL,
+    valor               NUMERIC(10, 2) NOT NULL CHECK (valor >= 0),
+    status              VARCHAR(10)    NOT NULL DEFAULT 'ABERTA',
+    CONSTRAINT fk_os_veiculo FOREIGN KEY (veiculo_id) REFERENCES veiculo(id),
+    CONSTRAINT chk_status CHECK (status IN ('ABERTA', 'CONCLUIDA'))
 );

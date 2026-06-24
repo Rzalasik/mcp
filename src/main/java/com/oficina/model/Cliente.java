@@ -1,4 +1,4 @@
-package br.edu.faculdade.oficina.model;
+package com.oficina.model;
 
 public class Cliente {
     private int id;
