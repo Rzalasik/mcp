@@ -118,6 +118,8 @@ mvn exec:java
 | 2 | Valor da consulta não pode ser negativo — lança `IllegalArgumentException` |
 | 3 | É possível listar todas as consultas de um determinado animal |
 | 4 | É possível listar todos os animais vinculados a um determinado tutor |
+| 5 | Não é permitido cadastrar animal para tutor não cadastrado |
+| 6 | Nome e telefone do tutor são obrigatórios |
 
 ---
 
