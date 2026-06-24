@@ -48,7 +48,7 @@ escola-cursos-livres/
 ### 1. Crie o banco no PostgreSQL
 
 ```sql
-CREATE DATABASE escola_cursos;
+CREATE DATABASE d_escola_cursos;
 ```
 
 ### 2. Execute os scripts abaixo na ordem (respeita as foreign keys)
