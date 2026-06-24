@@ -67,7 +67,8 @@ CREATE TABLE animal (
     especie   VARCHAR(50)  NOT NULL,
     raca      VARCHAR(50),
     tutor_id  INT NOT NULL,
-    CONSTRAINT fk_animal_tutor FOREIGN KEY (tutor_id) REFERENCES tutor(id)
+    CONSTRAINT fk_animal_tutor      FOREIGN KEY (tutor_id) REFERENCES tutor(id) ON DELETE RESTRICT,
+    CONSTRAINT uq_animal_nome_tutor UNIQUE (nome, tutor_id)
 );
 
 CREATE TABLE consulta (
@@ -76,8 +77,11 @@ CREATE TABLE consulta (
     data       DATE           NOT NULL,
     motivo     VARCHAR(200)   NOT NULL,
     valor      NUMERIC(10, 2) NOT NULL CHECK (valor >= 0),
-    CONSTRAINT fk_consulta_animal FOREIGN KEY (animal_id) REFERENCES animal(id)
+    CONSTRAINT fk_consulta_animal FOREIGN KEY (animal_id) REFERENCES animal(id) ON DELETE RESTRICT
 );
+
+CREATE INDEX idx_animal_tutor    ON animal(tutor_id);
+CREATE INDEX idx_consulta_animal ON consulta(animal_id);
 ```
 
 ### 3. Configure a conexão
