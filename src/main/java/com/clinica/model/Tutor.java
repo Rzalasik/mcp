@@ -1,4 +1,4 @@
-package br.edu.faculdade.clinicaveterinaria.model;
+package com.clinica.model;
 
 public class Tutor {
     private int id;
