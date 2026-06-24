@@ -18,7 +18,7 @@ public class AlunoController {
             System.out.println("[Aluno] Cadastrado com sucesso: " + aluno);
             return aluno;
         } catch (IllegalArgumentException | SQLException e) {
-            System.out.println("[Aluno] Erro ao Cadastrar: " + e.getMessage());
+            System.out.println("[Aluno] Erro ao cadastrar: " + e.getMessage());
             return null;
         }
     }
@@ -26,7 +26,7 @@ public class AlunoController {
     public void listarTodos() {
         try {
             List<Aluno> alunos = service.listarTodos();
-            System.out.println("[Aluno] Total de Alunos: " + alunos.size());
+            System.out.println("[Aluno] Total de alunos: " + alunos.size());
             alunos.forEach(a -> System.out.println("  " + a));
         } catch (SQLException e) {
             System.out.println("[Aluno] Erro ao listar: " + e.getMessage());
